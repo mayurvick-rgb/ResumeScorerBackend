@@ -151,18 +151,16 @@ REST_FRAMEWORK = {
 }
 
 # CORS Configuration
-if DEBUG:
-    CORS_ALLOWED_ORIGINS = [
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ]
-    CORS_ALLOW_ALL_ORIGINS = True
-else:
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+if not DEBUG:
     cors_origins = os.environ.get('CORS_ALLOWED_ORIGINS', '')
     if cors_origins:
-        CORS_ALLOWED_ORIGINS = [origin.strip() for origin in cors_origins.split(',') if origin.strip()]
-    else:
-        CORS_ALLOWED_ORIGINS = []
+        CORS_ALLOWED_ORIGINS.extend([origin.strip() for origin in cors_origins.split(',') if origin.strip()])
 
 # Media files
 MEDIA_URL = '/media/'
