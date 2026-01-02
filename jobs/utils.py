@@ -1,7 +1,11 @@
 import random
 from datetime import datetime, timedelta
 from .models import JobPost
-from .live_search_simple import LiveJobSearchEngine
+
+try:
+    from .live_search import LiveJobSearchEngine
+except ImportError:
+    LiveJobSearchEngine = None
 
 class JobSearchEngine:
     def __init__(self):
@@ -20,15 +24,17 @@ class JobSearchEngine:
     def search_jobs(self, query, location=''):
         """Search jobs from live sources"""
         try:
-            # Use live search engine
-            live_engine = LiveJobSearchEngine()
-            jobs = live_engine.search_all_platforms(query, location)
+            # Use live search engine if available
+            if LiveJobSearchEngine:
+                live_engine = LiveJobSearchEngine()
+                jobs = live_engine.search_all_platforms(query, location)
+                
+                # If live search fails or returns no results, fallback to mock data
+                if jobs:
+                    return jobs
             
-            # If live search fails or returns no results, fallback to mock data
-            if not jobs:
-                jobs = self._get_fallback_jobs(query, location)
-            
-            return jobs
+            # Fallback to mock data
+            return self._get_fallback_jobs(query, location)
         except Exception as e:
             print(f"Live search failed: {e}")
             # Fallback to mock data

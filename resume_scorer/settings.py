@@ -79,27 +79,22 @@ WSGI_APPLICATION = 'resume_scorer.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-if DEBUG:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-else:
-    import dj_database_url
-    DATABASE_URL = os.environ.get('DATABASE_URL')
-    if DATABASE_URL:
-        DATABASES = {
-            'default': dj_database_url.parse(DATABASE_URL)
-        }
-    else:
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.sqlite3',
-                'NAME': BASE_DIR / 'db.sqlite3',
-            }
-        }
+}
+
+# Production database configuration
+if not DEBUG:
+    try:
+        import dj_database_url
+        DATABASE_URL = os.environ.get('DATABASE_URL')
+        if DATABASE_URL:
+            DATABASES['default'] = dj_database_url.parse(DATABASE_URL)
+    except ImportError:
+        pass  # Keep SQLite as fallback
 
 
 # Password validation
@@ -163,7 +158,11 @@ if DEBUG:
     ]
     CORS_ALLOW_ALL_ORIGINS = True
 else:
-    CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', '').split(',')
+    cors_origins = os.environ.get('CORS_ALLOWED_ORIGINS', '')
+    if cors_origins:
+        CORS_ALLOWED_ORIGINS = [origin.strip() for origin in cors_origins.split(',') if origin.strip()]
+    else:
+        CORS_ALLOWED_ORIGINS = []
 
 # Media files
 MEDIA_URL = '/media/'
