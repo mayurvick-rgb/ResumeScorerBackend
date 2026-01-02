@@ -48,7 +48,7 @@ class ResumeProcessor:
         for skill in self.skills_keywords:
             if skill.lower() in text_lower:
                 found_skills.append(skill)
-        return found_skills
+        return list(set(found_skills))  # Remove duplicates
     
     def extract_experience(self, text: str) -> float:
         experience_patterns = [

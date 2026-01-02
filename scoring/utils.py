@@ -14,11 +14,11 @@ class ATSScorer:
     
     def calculate_ats_score(self, resume_text: str, job_description: str) -> float:
         """Calculate ATS compatibility score based on keyword matching"""
-        resume_words = set(resume_text.lower().split())
-        job_words = set(job_description.lower().split())
+        resume_words = set(word.lower() for word in resume_text.split() if len(word) > 2)
+        job_words = set(word.lower() for word in job_description.split() if len(word) > 2)
         
         # Remove common words
-        common_words = {'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by'}
+        common_words = {'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'are', 'is', 'was', 'will', 'have', 'has'}
         resume_words -= common_words
         job_words -= common_words
         
