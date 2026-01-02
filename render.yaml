@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: resume-scorer-backend
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn resume_scorer.wsgi:application"
+    plan: free
