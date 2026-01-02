@@ -1,7 +1,7 @@
 import random
 from datetime import datetime, timedelta
 from .models import JobPost
-from .live_search import LiveJobSearchEngine
+from .live_search_simple import LiveJobSearchEngine
 
 class JobSearchEngine:
     def __init__(self):
